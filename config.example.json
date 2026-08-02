@@ -1,0 +1,6 @@
+[
+  { "brand": "蜜雪冰城", "status": "pending", "priority": 1 },
+  { "brand": "菜鸟驿站", "status": "pending", "priority": 1 },
+  { "brand": "瑞幸咖啡", "status": "pending", "priority": 1 },
+  { "brand": "星巴克", "status": "pending", "priority": 1 }
+]

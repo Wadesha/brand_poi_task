@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>品牌门店 POI 批量采集系统 · 成果展示</title>
+<style>
+  :root{
+    --bg:#f6f8fa; --card:#ffffff; --ink:#1f2328; --muted:#656d76;
+    --line:#e1e4e8; --brand:#2563eb; --brand2:#0ea5e9;
+    --c1:#ef4444; --c2:#f59e0b; --c3:#10b981; --c4:#8b5cf6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 60px}
+  header.hero{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;padding:54px 20px 46px;margin-bottom:32px}
+  header.hero .inner{max-width:1080px;margin:0 auto}
+  header.hero h1{margin:0 0 10px;font-size:30px;letter-spacing:.5px}
+  header.hero p{margin:0;color:#cbd5e1;font-size:15px}
+  .badge{display:inline-block;margin-top:16px;padding:5px 12px;border:1px solid rgba(255,255,255,.3);
+         border-radius:999px;font-size:12px;color:#e2e8f0;background:rgba(255,255,255,.06)}
+  section{margin:34px 0}
+  h2{font-size:20px;margin:0 0 16px;display:flex;align-items:center;gap:8px}
+  h2::before{content:"";width:4px;height:18px;background:var(--brand);border-radius:2px;display:inline-block}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .card .num{font-size:28px;font-weight:700;color:var(--brand)}
+  .card .lbl{color:var(--muted);font-size:13px;margin-top:4px}
+  .chart{display:flex;align-items:flex-end;gap:26px;height:280px;padding:20px;background:var(--card);
+         border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .bar .col{width:60%;max-width:90px;border-radius:8px 8px 0 0;transition:height .8s ease;position:relative}
+  .bar .val{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:600;white-space:nowrap}
+  .bar .name{margin-top:10px;font-size:13px;color:var(--muted)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 4px;box-shadow:0 1px 3px rgba(0,0,0,.04);overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:11px 16px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;background:#fafbfc;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  tr:last-child td{border-bottom:none}
+  td .pill{padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}
+  .map{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .map svg{width:100%;height:auto;display:block}
+  .note{background:#fffbe6;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;font-size:13px;color:#7c5e10}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px}
+  @media(max-width:720px){.cards{grid-template-columns:repeat(2,1fr)}.chart{gap:12px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="inner">
+    <h1>品牌门店 POI 批量采集系统</h1>
+    <p>基于腾讯地图 WebService API，批量采集全国连锁品牌门店位置（POI）——成果可视化展示</p>
+    <span class="badge">演示页面 · 使用模拟 / 示例数据</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <div class="cards" id="overview"></div>
+  </section>
+
+  <section>
+    <h2>各品牌门店数量（示例）</h2>
+    <div class="chart" id="brandChart"></div>
+  </section>
+
+  <section>
+    <h2>全国门店分布示意（示例散点）</h2>
+    <div class="map"><svg id="mapSvg" viewBox="0 0 680 380" preserveAspectRatio="xMidYMid meet"></svg></div>
+  </section>
+
+  <section>
+    <h2>门店数量 Top 10 城市（示例）</h2>
+    <div class="panel"><table id="cityTable"></table></div>
+  </section>
+
+  <section>
+    <h2>示例门店记录</h2>
+    <div class="panel"><table id="poiTable"></table></div>
+  </section>
+
+  <div class="note">
+    ⚠️ 本页所有数字均为<strong>模拟 / 示例数据</strong>，仅用于展示本项目的采集结果形态与字段结构，
+    不代表真实门店信息。真实采集代码与数据见 GitHub 仓库（公开代码 + 私有数据分离）。
+  </div>
+
+  <footer>
+    品牌门店 POI 批量采集系统 · 演示页 ·
+    <a href="https://github.com/Wadesha/brand_poi_task">项目仓库</a>
+  </footer>
+</div>
+
+<script>
+  // ── 模拟 / 示例数据 ──
+  const overview = [
+    {num:"4", lbl:"采集品牌"},
+    {num:"293", lbl:"覆盖地级市"},
+    {num:"110,357", lbl:"累计 POI（示例）"},
+    {num:"100%", lbl:"断点续传保障"}
+  ];
+  const brands = [
+    {name:"蜜雪冰城", count:47349, color:"var(--c1)"},
+    {name:"菜鸟驿站", count:40078, color:"var(--c2)"},
+    {name:"瑞幸咖啡", count:16001, color:"var(--c3)"},
+    {name:"星巴克",  count:6929,  color:"var(--c4)"}
+  ];
+  const topCities = [
+    {city:"上海", count:3821}, {city:"北京", count:3540}, {city:"广州", count:2980},
+    {city:"深圳", count:2760}, {city:"成都", count:2310}, {city:"杭州", count:2180},
+    {city:"武汉", count:1990}, {city:"重庆", count:1870}, {city:"西安", count:1640},
+    {city:"南京", count:1520}
+  ];
+  const samplePois = [
+    {name:"蜜雪冰城（南京东路店）", address:"上海市黄浦区南京东路 123 号", category:"冷饮店", city:"上海", lat:31.235, lng:121.480},
+    {name:"瑞幸咖啡（国贸店）",     address:"北京市朝阳区建国门外大街 1 号", category:"咖啡店", city:"北京", lat:39.908, lng:116.461},
+    {name:"菜鸟驿站（体育西路站）", address:"广州市天河区体育西路 45 号",   category:"物流驿站", city:"广州", lat:23.135, lng:113.324},
+    {name:"星巴克（科技园店）",     address:"深圳市南山区科技园路 8 号",   category:"咖啡店", city:"深圳", lat:22.537, lng:113.951},
+    {name:"蜜雪冰城（春熙路店）",   address:"成都市武侯区春熙路 99 号",   category:"冷饮店", city:"成都", lat:30.651, lng:104.081}
+  ];
+
+  // 概览卡片
+  document.getElementById("overview").innerHTML = overview.map(o=>
+    `<div class="card"><div class="num">${o.num}</div><div class="lbl">${o.lbl}</div></div>`).join("");
+
+  // 品牌柱状图
+  const maxC = Math.max(...brands.map(b=>b.count));
+  document.getElementById("brandChart").innerHTML = brands.map(b=>{
+    const h = Math.round(b.count / maxC * 100);
+    return `<div class="bar">
+      <div class="col" style="height:${h}%;background:${b.color}">
+        <span class="val">${b.count.toLocaleString()}</span>
+      </div>
+      <div class="name">${b.name}</div>
+    </div>`;
+  }).join("");
+
+  // Top 城市表
+  document.getElementById("cityTable").innerHTML =
+    "<thead><tr><th>#</th><th>城市</th><th>门店数（示例）</th></tr></thead><tbody>" +
+    topCities.map((c,i)=>`<tr><td>${i+1}</td><td>${c.city}</td><td>${c.count.toLocaleString()}</td></tr>`).join("") +
+    "</tbody>";
+
+  // 示例门店表
+  document.getElementById("poiTable").innerHTML =
+    "<thead><tr><th>门店名称</th><th>地址</th><th>分类</th><th>城市</th><th>坐标(lat,lng)</th></tr></thead><tbody>" +
+    samplePois.map(p=>`<tr><td>${p.name}</td><td>${p.address}</td><td><span class="pill">${p.category}</span></td><td>${p.city}</td><td>${p.lat}, ${p.lng}</td></tr>`).join("") +
+    "</tbody>";
+
+  // 门店分布散点（中国 bbox 内随机示例点）
+  (function(){
+    const svg = document.getElementById("mapSvg");
+    const W=680,H=380;
+    const latMin=18,latMax=53,lngMin=73,lngMax=135;
+    const proj=(lat,lng)=>[ (lng-lngMin)/(lngMax-lngMin)*W, H-(lat-latMin)/(latMax-latMin)*H ];
+    let dots="";
+    // 让点更集中在东部（示意）
+    for(let i=0;i<240;i++){
+      const lng = lngMin + Math.random()*(lngMax-lngMin)*0.95;
+      const lat = latMin + Math.random()*(latMax-latMin);
+      const [x,y]=proj(lat,lng);
+      const r = 1.6 + Math.random()*1.8;
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#2563eb" fill-opacity="0.55"/>`;
+    }
+    svg.innerHTML = dots;
+  })();
+</script>
+</body>
+</html>

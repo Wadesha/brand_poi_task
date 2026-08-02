@@ -1,0 +1,29 @@
+# 本地冗余旧脚本目录（已被根目录 scrape_brands.py 取代，忽略以免重复跟踪）
+scripts/
+
+# ── 数据文件（原始/采集结果，体积大且含点位信息，默认不上传，需用户确认）──
+data/
+outputs/
+
+# ── 运行时生成的大文件与日志 ──
+brand_poi_data.json
+brand_poi_progress.json
+brand_scrape_log.txt
+采集进度报告.md
+
+# 队列运行时状态（初始队列示例见 config.example.json）
+brand_queue.json
+
+# ── 隐私：API Key 配置（绝不入库）──
+.env
+config/tencent_keys.txt
+
+# ── Python 缓存 ──
+__pycache__/
+*.pyc
+*.pyo
+
+# ── 系统 / 编辑器 ──
+.DS_Store
+*.swp
+Thumbs.db
